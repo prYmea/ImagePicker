@@ -71,7 +71,11 @@ open class ImagePickerController: UIViewController {
 
   @objc open weak var delegate: ImagePickerDelegate?
   open var stack = ImageStack()
-  open var imageLimit = 0
+  open var imageLimit = 0 {
+    didSet {
+      galleryView.imageLimit = imageLimit
+    }
+  }
   open var preferredImageSize: CGSize?
   open var startOnFrontCamera = false
   var totalSize: CGSize { return UIScreen.main.bounds.size }
@@ -100,7 +104,7 @@ open class ImagePickerController: UIViewController {
     self.configuration = Configuration()
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
   }
-  
+
   public required init?(coder aDecoder: NSCoder) {
     self.configuration = Configuration()
     super.init(coder: aDecoder)
@@ -234,7 +238,7 @@ open class ImagePickerController: UIViewController {
       selector: #selector(adjustButtonTitle(_:)),
       name: NSNotification.Name(rawValue: ImageStack.Notifications.imageDidDrop),
       object: nil)
-    
+
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(dismissIfNeeded),
                                            name: NSNotification.Name(rawValue: ImageStack.Notifications.imageDidDrop),
@@ -279,7 +283,7 @@ open class ImagePickerController: UIViewController {
       configuration.doneButtonTitle : configuration.cancelButtonTitle
     bottomContainer.doneButton.setTitle(title, for: UIControlState())
   }
-  
+
   @objc func dismissIfNeeded() {
     // If only one image is requested and a push occures, automatically dismiss the ImagePicker
     if imageLimit == 1 {
